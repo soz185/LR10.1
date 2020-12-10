@@ -11,9 +11,9 @@ public:
 	{
 		this->radius = 0;
 	}
-	void initRadius(double rad)
+	Radius(double rad)
 	{
-		radius = rad;
+		this->radius = rad;
 	}
 	void readRadius()
 	{
@@ -57,10 +57,11 @@ public:
 
 	Vector()
 	{
+		Radius rad(0);
 		X = 0;
 		Y = 0;
 		Z = 0;
-		cylinderRadius.initRadius(0);
+		cylinderRadius = rad;
 		Vector::countOfVectors++;
 	}
 	Vector(double X, double y, double z, Radius rad)
@@ -74,10 +75,11 @@ public:
 
 	Vector(int n)
 	{
+		Radius rad(n);
 		this->X = n;
 		this->Y = n;
 		this->Z = n;
-		this->cylinderRadius.initRadius(n);
+		this->cylinderRadius = rad;
 		Vector::countOfVectors++;
 	}
 
@@ -100,6 +102,8 @@ public:
 	{
 		std::cin >> this->X >> this->Y >> this->Z;
 		this->cylinderRadius.readRadius();
+		if (X < -100 || X > 100 || Y < -100 || Y > 100 || Z < -100 || Z > 100 || cylinderRadius.returnRadius() < -100 || cylinderRadius.returnRadius() > 100)
+			throw 0;
 	}
 
 	void display()
@@ -196,14 +200,25 @@ int main()
 	int length_str = str.length();
 	std::cout << str << "Длина строки " << length_str << "\n";
 	Vector a, c;
-	Radius rad;
-	rad.initRadius(1.5);
+	Radius rad(1.5);
 	Vector b(1, 0, -2, rad);
-	//b.init(1, 0, -2, rad);
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
-	printf("Введите координаты и радиус a: ");
-	a.read();
+	bool p = false;
+	while (!p)
+	{
+		p = true;
+		try
+		{
+			printf("Введите координаты и радиус a [-100;100]: ");
+			a.read();
+		}
+		catch (...)
+		{
+			printf("Повторите ввод.\n");
+			p = false;
+		}
+	}
 
 	printf("Цилиндры:\n");
 	printf("a ");
@@ -250,7 +265,6 @@ int main()
 	printf("Динамические переменные.\n");
 	Vector* din_a = new Vector();
 	Vector* din_b = new Vector(1, 0, -2.1, rad);
-	//(*din_b).init(1, 0, -2.1, rad);
 	Vector* din_c = new Vector();
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
@@ -261,8 +275,22 @@ int main()
 	d = (Vector*)realloc(d, 3 * sizeof(Vector));
 	free(d);
 
-	printf("Введите координаты и радиус a: ");
-	(*din_a).read();
+	p = false;
+	while (!p)
+	{
+		p = true;
+		try
+		{
+			printf("Введите координаты и радиус a [-100;100]: ");
+			(*din_a).read();
+		}
+		catch (...)
+		{
+			printf("Повторите ввод.\n");
+			p = false;
+		}
+	}
+
 	printf("Цилиндры:\n");
 	printf("a ");
 	(*din_a).display();
@@ -299,13 +327,12 @@ int main()
 	printf("\nДлина вектора a равна %g\n", (*din_a).length());
 	printf("Скалярное произведение векторов a и b равно %g\n", (*din_a).scalar(*din_b));
 	delete din_a;
-	delete din_b;
+	//delete din_b;
 	delete din_c;
 
 	printf("Динамический массив объектов.\n");
 	Vector* din_mas_obj;
 	din_mas_obj = new Vector[3]{ 1, 2, 0 };
-	//din_mas_obj[1].init(1, -3, 0, rad);
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
 	printf("Введите координаты и радиус a: ");
